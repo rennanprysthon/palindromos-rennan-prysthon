@@ -12,7 +12,8 @@
 
 ## Database
 
-[Database URL](localhost:8082/h2-console)
+[Database URL](http://localhost:8082/h2-console)
+
  - URL: jdbc:h2:mem:words
  - User: sa
  - Password: password
