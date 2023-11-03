@@ -1,8 +1,8 @@
 package br.com.rennanprysthon.wordsearch.features;
 
-import br.com.rennanprysthon.wordsearch.controller.json.WordRequestDTO;
 import br.com.rennanprysthon.wordsearch.controller.json.WordResultDTO;
 import br.com.rennanprysthon.wordsearch.controller.json.WordRowDTO;
+import br.com.rennanprysthon.wordsearch.infra.database.WordResultTable;
 import br.com.rennanprysthon.wordsearch.infra.database.WordRowTable;
 import br.com.rennanprysthon.wordsearch.infra.database.WordTable;
 import br.com.rennanprysthon.wordsearch.infra.database.WordTableRepository;
@@ -39,7 +39,7 @@ public class FindResponses {
         WordResultDTO wordResultDTO = new WordResultDTO(
             wordTable.getUuid(),
             wordRowDTOS,
-            wordTable.getResults(),
+            wordTable.getResults().stream().map(WordResultTable::getResultWord).collect(Collectors.toList()),
             formatDate(wordTable.getCreatedAt())
         );
 

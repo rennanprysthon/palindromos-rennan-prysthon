@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "TB_WORD")
@@ -15,16 +16,12 @@ public class WordTable {
 
     @Temporal(TemporalType.DATE)
     private Date createdAt;
-    @ElementCollection
-    @Column(name="results", nullable=false)
-    @CollectionTable(
-            name = "TB_WORD_RESULT",
-            joinColumns = @JoinColumn(
-                    name = "tb_word_id",
-                    referencedColumnName = "uuid"
-            )
+    @OneToMany(
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        mappedBy = "wordTable"
     )
-    private List<String> results = new ArrayList<String>();
+    private List<WordResultTable> results = new ArrayList<WordResultTable>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WordRowTable> rows = new ArrayList<>();
@@ -33,7 +30,7 @@ public class WordTable {
         return createdAt;
     }
 
-    public List<String> getResults() {
+    public List<WordResultTable> getResults() {
         return results;
     }
 
@@ -42,7 +39,17 @@ public class WordTable {
     }
 
     public void setResults(List<String> results) {
-        this.results = results;
+        List<WordResultTable> resultTables = new ArrayList<>();
+        WordResultTable wordResultTable;
+
+        for (String result : results) {
+            wordResultTable = new WordResultTable(result);
+            wordResultTable.setWordTable(this);
+            resultTables.add(wordResultTable);
+
+        }
+
+        this.results = resultTables;
     }
 
     public void setCreatedAt(Date createdAt) {
